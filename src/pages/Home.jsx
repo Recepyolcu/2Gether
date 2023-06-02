@@ -45,9 +45,6 @@ export default function Home() {
                     <Hits hitComponent={Hit} />
                 </InstantSearch>
             </div>
-            <div className="w-1/3 border">
-
-            </div>
         </div>
     )
 }

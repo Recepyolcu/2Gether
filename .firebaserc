@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "gether-test-f44be"
-  }
+    "default": "gether-test-f44be",
+    "gether": "gether-test-f44be"
+  },
+  "targets": {},
+  "etags": {}
 }
