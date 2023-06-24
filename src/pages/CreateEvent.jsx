@@ -21,6 +21,8 @@ export default function CreateEvent() {
     const { user } = useUser()
     const [ data, setData ] = useState({
         creatorID: user?.uid,
+        creatorUserName: user?.user_name,
+        creatorPhotoURL: user?.photoURL,
         eventID: '',
         title: '',
         description: '',
@@ -28,13 +30,11 @@ export default function CreateEvent() {
         createdAt: '',
         startsAt: '',
         category: '',
-        isActive: false,
-        eventLocation: {
-            address: '',
-            latitude: '',
-            longitude: '',
+        eventAddress: '',
+        _geoloc: {
+            lat: '',
+            lng: '',
         },
-        comments: [],
         likes: 0,
         participants: [],
         saves: 0,
@@ -72,15 +72,15 @@ export default function CreateEvent() {
         if (e.target.value == '') e.target.style.borderColor = '#801010'
         else e.target.style.borderColor = '#454545'
 
-        if (e.target.name == 'eventLocation') {
+        if (e.target.name == 'eventAddress') {
             getGeolocation(e.target.value)
             .then(result => {
                 setData(prevData => ({
                     ...prevData,
-                    eventLocation: {
-                        address: result.formattedAddress,
-                        latitude: result.latitude,
-                        longitude: result.longitude
+                    eventAddress: result.formattedAddress,
+                    _geoloc: {
+                        lat: result.latitude,
+                        lng: result.longitude
                     }
                 }));
             })
@@ -163,14 +163,6 @@ export default function CreateEvent() {
         handleImage(e.dataTransfer.files[0])
     }
 
-    const hitComponent = ({ hit }) => {
-        return (
-            <button key={hit.id}>
-                {hit.name}
-            </button>
-        )
-    }
-
     return (
         <main className="relative bg-main_light dark:bg-dark sm:rounded-2xl sm:p-10 w-full h-full flex flex-col items-center justify-center">
                     <form className="sm:pt-20 w-9/12 max-lg:w-full h-fit flex flex-col items-center sm:border dark:border-main_light_gray border-main_text rounded-xl overflow-hidden">
@@ -187,7 +179,7 @@ export default function CreateEvent() {
                         <input onBlur={(e) => handleInput(e)} onChange={(e) => handleInput(e)} className="p-6 w-full text-xl bg-main_light placeholder:text-main_light_gray dark:bg-dark border-b-2 border-main_text dark:border-main_light_gray outline-none dark:focus:bg-main_text hover:bg-white dark:hover:bg-main_text anim-500" type="text" name="title" placeholder="Başlık" />
                         <input onBlur={(e) => handleInput(e)} onChange={(e) => handleInput(e)} className="p-6 w-full text-xl bg-main_light placeholder:text-main_light_gray dark:bg-dark border-b-2 border-main_text dark:border-main_light_gray outline-none dark:focus:bg-main_text hover:bg-white dark:hover:bg-main_text anim-500" type="text" name="description" placeholder="Açıklama"/>
                         <label className="relative w-full">
-                            <select onChange={(e) => handleInput(e)} className="p-6 w-full text-xl bg-main_light placeholder:text-main_light_gray dark:bg-dark border-b-2 border-main_text dark:border-main_light_gray outline-none dark:focus:bg-main_text hover:bg-white dark:hover:bg-main_text anim-500" name="category">
+                            <select onLoad={(e) => handleInput(e)} onChange={(e) => handleInput(e)} className="p-6 w-full text-xl bg-main_light placeholder:text-main_light_gray dark:bg-dark border-b-2 border-main_text dark:border-main_light_gray outline-none dark:focus:bg-main_text hover:bg-white dark:hover:bg-main_text anim-500" name="category">
                                 {topics && topics.map((topic) => (
                                     <option key={topic} value={topic}>{topic}</option>
                                 ))}
@@ -199,8 +191,8 @@ export default function CreateEvent() {
                             <span className="absolute px-6 py-1 bg-main_text text-main_light_gray border opacity-0 peer-focus:opacity-100 peer-focus:-translate-y-4 dark:hover:bg-main_text anim-500" style={dateError ? {color: '#f04040', opacity: '1'} : {}}>{dateError ? dateError : 'Etkinliğin Yapılacağı Tarih'}</span>
                         </label>
                         <label className="w-full flex flex-col relative">
-                            <input onChange={(e) => handleInput(e)} onBlur={(e) => {handleDate(e); handleInput(e)}} placeholder="Etkinliğin Yapılacağı Yer" className="p-6 w-full text-xl bg-main_light text-main_light_gray placeholder:text-main_light_gray dark:bg-dark border-b-2 border-main_text dark:border-main_light_gray outline-none dark:focus:bg-main_text hover:bg-white dark:hover:bg-main_text anim-500 peer" type="text" name="eventLocation" />
-                            <span className="absolute px-6 py-1 bg-main_text text-main_light_gray border opacity-0 peer-focus:opacity-100 peer-focus:-translate-y-4 dark:hover:bg-main_text anim-500">{data.eventLocation.address}</span>
+                            <input onChange={(e) => handleInput(e)} onBlur={(e) => {handleDate(e); handleInput(e)}} placeholder="Etkinliğin Yapılacağı Yer" className="p-6 w-full text-xl bg-main_light text-main_light_gray placeholder:text-main_light_gray dark:bg-dark border-b-2 border-main_text dark:border-main_light_gray outline-none dark:focus:bg-main_text hover:bg-white dark:hover:bg-main_text anim-500 peer" type="text" name="eventAddress" />
+                            <span className="absolute px-6 py-1 bg-main_text text-main_light_gray border opacity-0 peer-focus:opacity-100 peer-focus:-translate-y-4 dark:hover:bg-main_text anim-500">{data.eventAddress}</span>
                         </label>
                         <button type="button" onClick={(e) => createEvent(e)} className="p-6 w-full text-xl bg-main_light  dark:bg-dark outline-none hover:text-main_dark_orange dark:hover:bg-main_text anim-500">Etkinlik Oluştur</button>
                     </form>

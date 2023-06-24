@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUserEvents } from "../utils/firebase";
 import { CgBox } from 'react-icons/cg'
-import { BsCalendar3 } from 'react-icons/bs'
 import { BiChat } from 'react-icons/bi'
 import Event from '../components/event'
 import Chat from '../components/chat'

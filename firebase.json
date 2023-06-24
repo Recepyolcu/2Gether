@@ -15,7 +15,7 @@
     }
   ],
   "hosting": {
-    "public": "dist", 
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -25,6 +25,30 @@
       {
         "source": "**",
         "destination": "/index.html"
+      }
+    ]
+  },
+  "firestore-algolia-search": {
+    "collections": [
+      {
+        "name": "events",
+        "indexName": "events",
+        "fields": [
+          "category",
+          "createdAt",
+          "creatorID",
+          "creatorUserName",
+          "creatorPhotoURL",
+          "description",
+          "eventID",
+          "eventLocation",
+          "likes",
+          "participants",
+          "photoURL",
+          "saves",
+          "startsAt",
+          "title"
+        ]
       }
     ]
   }

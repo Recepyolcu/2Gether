@@ -1,6 +1,6 @@
 import { uploadPhoto } from '../utils/firebase'
 import { firestore } from '../utils/firebase'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function EditEvent(props) {
     const [ popup, setPopup ] = useState({
@@ -9,8 +9,27 @@ export default function EditEvent(props) {
         message: '',
     })
     const [ dateError, setDateError ] = useState('')
+    const [ topics, setTopics ] = useState();
     const { data, setData } = props.data
     const { edit, setEdit } = props.edit
+
+    useEffect(() => {
+        getTopicNames()
+        console.log(data)
+    }, [])
+
+    const getTopicNames = () => {
+        const topicNames = [];
+        firestore.collection('topics').get()
+        .then((value) => {
+            value.docs.forEach((doc) => {
+                topicNames.push(doc.data().name)
+            })
+            setTopics(topicNames)
+        }).finally(() => {
+            return topicNames
+        })
+    }
 
     function handleInput(e) {
         if (e.target.value == '') e.target.style.borderColor = '#f04040'
@@ -83,8 +102,12 @@ export default function EditEvent(props) {
                     </div>
                     <div className="flex flex-col gap-3">
                         <h5 className="text-xl font-semibold">Kategori</h5>
-                        <div className='flex  justify-between'>
-                            <input onChange={(e) => handleInput(e)} onBlur={(e) => handleInput(e)} className='w-[48%] px-4 py-2 font-semibold text-sm bg-transparent border border-main_light_gray rounded-lg outline-none' type="text" value={data.categories} />
+                        <div className='flex justify-between'>
+                        <select value={data.category} onChange={(e) => handleInput(e)} className='px-4 py-2 font-semibold text-xl dark:bg-main_text bg-main_light border border-main_text dark:border-main_light_dark rounded-lg outline-none' name="category">
+                                {topics && topics.map((topic) => (
+                                    <option key={topic} value={topic}>{topic}</option>
+                                ))}
+                            </select>
                             <label className="w-[48%] flex flex-col relative">
                                 <input onBlur={(e) => handleInput(e)} onChange={(e) => {handleDate(e); handleInput(e)}} value={data.startsAt} name='startsAt' className='px-4 py-2 font-semibold text-sm bg-transparent border border-main_light_gray rounded-lg outline-none anim-500 peer cursor-pointer' type="date" />
                                 <span className="absolute bottom-10 text-sm px-3 py-1 bg-main_text text-main_light_gray border opacity-0 peer-focus:opacity-100 peer-focus:-translate-y-4 dark:hover:bg-main_text anim-500" style={dateError ? {color: '#f04040', opacity: '1'} : {}}>{dateError ? dateError : 'Etkinliğin Yapılacağı Tarih'}</span>

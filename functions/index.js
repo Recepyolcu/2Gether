@@ -1,39 +1,39 @@
-import { config, firestore } from "firebase-functions"
-import algoliasearch from "algoliasearch"
+import { config, firestore } from "firebase-functions";
+import algoliasearch from "algoliasearch";
 
-const APP_ID = config().algolia.app
-const ADMIN_KEY = config().algolia.key
+const APP_ID = config().algolia.app;
+const ADMIN_KEY = config().algolia.key;
 
-const client = algoliasearch(APP_ID, ADMIN_KEY)
-const indexTopics = client.initIndex("topics")
-const indexEvents = client.initIndex("events")
-const indexUsers = client.initIndex("users")
+const client = algoliasearch(APP_ID, ADMIN_KEY);
+const topicsIndex = client.initIndex("topics");
 
-export const addToIndexTopics = firestore.document("topics/{topicID}")
+export const addToIndex = firestore.document("topics/{topicID}")
     .onCreate(snapshot => {
         const data = snapshot.data();
         const objectID = snapshot.id;
 
-        return indexTopics.addObject({ ...data, objectID });
+        return topicsIndex.addObject({ ...data, objectID });
     });
 
-export const updateIndexTopics = firestore.document("topics/{topicID}")
+export const updateIndex = firestore.document("topics/{topicID}")
     .onCreate((change) => {
         const newData = change.after.data();
         const objectID = change.after.id;
 
-        return indexTopics.saveObject({ ...newData, objectID });
+        return topicsIndex.saveObject({ ...newData, objectID });
     });
 
-export const deleteFromIndexTopics = firestore.document("topics/{topicID}")
-    .onDelete(snapshot => indexTopics.deleteObject(snapshot.id));
+export const deleteFromIndex = firestore.document("topics/{topicID}")
+    .onDelete(snapshot => topicsIndex.deleteObject(snapshot.id));
 
+
+const eventsIndex = client.initIndex("events");
 export const addToIndexEvents = firestore.document("events/{eventID}")
     .onCreate(snapshot => {
         const data = snapshot.data();
         const objectID = snapshot.id;
 
-        return indexEvents.addObject({ ...data, objectID });
+        return eventsIndex.addObject({ ...data, objectID });
     });
 
 export const updateIndexEvents = firestore.document("events/{eventID}")
@@ -41,27 +41,29 @@ export const updateIndexEvents = firestore.document("events/{eventID}")
         const newData = change.after.data();
         const objectID = change.after.id;
 
-        return indexEvents.saveObject({ ...newData, objectID });
+        return eventsIndex.saveObject({ ...newData, objectID });
     });
 
 export const deleteFromIndexEvents = firestore.document("events/{eventID}")
-    .onDelete(snapshot => indexEvents.deleteObject(snapshot.id));
+    .onDelete(snapshot => eventsIndex.deleteObject(snapshot.id));
 
+
+const usersIndex = client.initIndex("users");
 export const addToIndexUsers = firestore.document("users/{userID}")
     .onCreate(snapshot => {
-        const data = snapshot.data();
-        const objectID = snapshot.id;
-
-        return indexUsers.addObject({ ...data, objectID });
+      const data = snapshot.data();
+      const objectID = snapshot.id;
+  
+      return usersIndex.addObject({ ...data, objectID });
     });
-
+  
 export const updateIndexUsers = firestore.document("users/{userID}")
     .onCreate((change) => {
-        const newData = change.after.data();
-        const objectID = change.after.id;
-
-        return indexUsers.saveObject({ ...newData, objectID });
+      const newData = change.after.data();
+      const objectID = change.after.id;
+  
+      return usersIndex.saveObject({ ...newData, objectID });
     });
-
+  
 export const deleteFromIndexUsers = firestore.document("users/{userID}")
-    .onDelete(snapshot => indexUsers.deleteObject(snapshot.id));
+    .onDelete(snapshot => usersIndex.deleteObject(snapshot.id));

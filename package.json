@@ -11,9 +11,10 @@
   },
   "dependencies": {
     "algoliasearch": "^4.17.1",
+    "faker": "^6.6.6",
     "firebase": "^9.22.0",
     "framer-motion": "^10.12.12",
-    "instantsearch.css": "^8.0.0",
+    "instantsearch.js": "^4.56.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
@@ -23,6 +24,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.0.0",

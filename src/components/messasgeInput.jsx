@@ -40,7 +40,7 @@ export default function MessageInput() {
     return (
         <div className="w-full relative">
             <input value={text} onChange={(e) => setText(e.target.value)} placeholder="mesaj..." type="text" className="absolute bottom-0 left-0 right-0 flex gap-6 px-6 items-center justify-center disabled:bg-main_light_dark disabled:hover:pl-6 bg-main_text dark:bg-main_text border border-main_text dark:border-main_light_dark rounded-lg p-3 text-main_light text-lg placeholder:text-main_light hover:pl-8 focus:pl-8 outline-none anim-500 peer max-md:text-sm" />
-            <button onClick={handleSendMessage} type="button" className="text-main_light absolute right-2 bottom-2.5 p-1.5 text-2xl rounded-lg dark:peer-focus:bg-main_light_dark peer-focus:bg-main_light_dark anim-500"><BiSend /></button>
+            <button onClick={handleSendMessage} type="button" className="text-main_light absolute right-2 bottom-1.5 p-1.5 text-2xl rounded-lg dark:peer-focus:bg-main_light_dark peer-focus:bg-main_light_dark anim-500"><BiSend /></button>
         </div>
     )
 }

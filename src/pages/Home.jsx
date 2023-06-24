@@ -1,50 +1,85 @@
+import { MdKeyboardArrowDown } from 'react-icons/md'
+import { AiOutlineMenu } from 'react-icons/ai'
+import { InstantSearch, Pagination } from "react-instantsearch-dom"
 import algoliasearch from "algoliasearch/lite"
-import { InstantSearch, Highlight } from "react-instantsearch-dom"
-import Hit from '../components/Hit'
-import { connectSearchBox } from 'react-instantsearch-dom';
-import { IoSearch } from 'react-icons/io5'
-import { connectHits } from 'react-instantsearch-dom';
-import Event from "../components/event";
+import { RefinementList } from '../components/customRefinementList'
+import { SearchBox } from '../components/customSearchBox'
+import { Hits } from '../components/Hit'
+import { useState } from 'react'
 
-const searchClient = algoliasearch(
-    'BE7H63GVIG',
-    '649b2e866a6455ec4bb44d89c94315da'
-)
+const searchClient = algoliasearch('BE7H63GVIG', '649b2e866a6455ec4bb44d89c94315da')
+const index = searchClient.initIndex('events')
 
-const CustomSearchBox = ({ currentRefinement, refine }) => (
-    <label className="w-full relative">
-        <input
-            type="search"
-            value={currentRefinement}
-            placeholder="Etkinlik ara"
-            onChange={event => refine(event.currentTarget.value)}
-            className='w-full p-3 px-6 rounded-2xl font-normal bg-white border-2 border-main_light_dark dark:bg-transparent placeholder:text-neutral-400 dark:focus:placeholder:text-main_light outline-none dark:focus:bg-main_text anim-500 overflow-hidden'
-            />
-            <button className="absolute right-4 top-3.5"><IoSearch className="text-xl" /></button>
-    </label>
-);
-const CustomHits = ({ hits }) => (
-    <div className='gap-6 grid 2xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1'>
-            {hits.map((event) => (
-                <Event key={event.id} content={event} />
-            ))}
-    </div>
-);
-  
-const Hits = connectHits(CustomHits);
-const SearchBox = connectSearchBox(CustomSearchBox);
-  
 
 export default function Home() {
+    const [ categoryShow, setCategoryShow ] = useState(false)
+    const [ eventAddressShow, setEventAddressShow ] = useState(false)
+    const [ menuShow, setMenuShow ] = useState(false)
+
+    const toggleShowMore = (att) => {
+        if (att === 'category') {
+            setCategoryShow(!categoryShow)
+        }
+        if (att === 'eventAddress') {
+            setEventAddressShow(!eventAddressShow)
+        }
+    }
+
+    const Filters = () => {
+        
+    }
 
     return (
-        <div className="w-full flex gap-5 p-5 bg-main_light sm:border-2 border-main_light_dark dark:bg-transparent rounded-3xl shadow-xl">
-            <div className="flex flex-col gap-5">
-                <InstantSearch searchClient={searchClient} indexName='events'>
-                    <SearchBox />
-                    <Hits hitComponent={Hit} />
-                </InstantSearch>
-            </div>
+        <div className="w-full flex gap-5">
+            <InstantSearch searchClient={searchClient} indexName='events'>
+                <div className="w-full flex flex-col items-end gap-5 p-5 bg-main_light sm:border-2 border-main_light_dark dark:bg-dark rounded-3xl">
+                    <div className='w-full flex flex-col gap-3'>
+                        <div className='flex gap-3'>
+                            <SearchBox />
+                            <button onClick={() => setMenuShow(!menuShow)} className='sm:hidden p-2 w-12 h-12 flex items-center justify-center rounded-full border border-main_light_dark hover:border-main_light_gray anim-500'><AiOutlineMenu /></button>
+                        </div>
+                        <div className={`w-[400px] ${menuShow ? 'flex' : 'hidden'} max-lg:w-[300px] h-fit flex flex-col gap-5 p-5 bg-main_light sm:border-2 border-main_light_dark dark:bg-dark rounded-3xl`}>
+                            <h2 className='font-semibold text-xl max-md:text-lg'>Filteler</h2>
+                            <hr />
+                            <div className='flex flex-col gap-2 relative'>
+                                <h3 className='text-lg max-md:text-base font-gilroy'>Kategoriler</h3>
+                                <div className='flex flex-col items-center gap-2'>
+                                    <RefinementList attribute="category" limit={5} showMore={categoryShow} />
+                                    <button type='button' className={`${categoryShow && 'rotate-180'}`} onClick={() => toggleShowMore('category')}><MdKeyboardArrowDown className='text-2xl hover:translate-y-2 anim-500' /></button>
+                                </div>
+                            </div>
+                            <div className='flex flex-col gap-2 relative'>
+                                <h3 className='text-lg max-md:text-base font-gilroy'>Etkinlik Konumları</h3>
+                                <div className='flex flex-col items-center gap-2'>
+                                    <RefinementList attribute="eventAddress" limit={5} showMoreLimit={100} showMore={eventAddressShow} />
+                                    <button type='button' className={`${eventAddressShow && 'rotate-180'}`} onClick={() => toggleShowMore('eventAddress')}><MdKeyboardArrowDown className='text-2xl hover:translate-y-2 anim-500' /></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <Pagination />
+                    <Hits hitComponent={Hits} />
+                </div>
+                
+                <div className={`w-[400px] max-sm:hidden max-lg:w-[330px] h-fit flex flex-col gap-5 p-5 bg-main_light sm:border-2 border-main_light_dark dark:bg-dark rounded-3xl`}>
+                    <h2 className='font-semibold text-xl max-md:text-lg'>Filteler</h2>
+                    <hr />
+                    <div className='flex flex-col gap-2 relative'>
+                        <h3 className='text-lg max-md:text-base font-gilroy'>Kategoriler</h3>
+                        <div className='flex flex-col items-center gap-2'>
+                            <RefinementList attribute="category" limit={5} showMore={categoryShow} />
+                            <button type='button' className={`${categoryShow && 'rotate-180'}`} onClick={() => toggleShowMore('category')}><MdKeyboardArrowDown className='text-2xl hover:translate-y-2 anim-500' /></button>
+                        </div>
+                    </div>
+                    <div className='flex flex-col gap-2 relative'>
+                        <h3 className='text-lg max-md:text-base font-gilroy'>Etkinlik Konumları</h3>
+                        <div className='flex flex-col items-center gap-2'>
+                            <RefinementList attribute="eventAddress" limit={5} showMoreLimit={100} showMore={eventAddressShow} />
+                            <button type='button' className={`${eventAddressShow && 'rotate-180'}`} onClick={() => toggleShowMore('eventAddress')}><MdKeyboardArrowDown className='text-2xl hover:translate-y-2 anim-500' /></button>
+                        </div>
+                    </div>
+                </div>
+            </InstantSearch>
         </div>
     )
 }

@@ -56,27 +56,11 @@ export default function EventPage() {
             getSave()
             getJoin()
             getEvents()
-            getCreator()
             getParticipants()
+            setLoading(false)
+            console.log(eventID)
         }
     }, [eventData]);
-
-    const getCreator = async () => {
-        try {
-            setLoading(true);
-            const doc = await firestore.collection('users').doc(eventData.creatorID).get();
-            const creatorData = doc.data();
-            setCreator({
-                id: creatorData.uid,
-                username: creatorData.user_name,
-                photoURL: creatorData.photoURL 
-            });
-        } catch (error) {
-            setError(error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const getEvent = async () => {
         try {
@@ -118,7 +102,7 @@ export default function EventPage() {
                 setTimeout(() => {
                     setPopup({...popup, opacity: '0', display: 'none'})
                 }, 2000);
-                isJoined(true)
+                setIsJoined(true)
             })
         }).catch(() => {
             setPopup({...popup,opacity: '100', display: 'block', message: 'Bir hatadan dolayı etkinliğe katılamadın'})
@@ -171,7 +155,7 @@ export default function EventPage() {
                         </div>
                         <div>
                             <h3 className="text-2xl max-lg:text-xl font-semibold">Etkinliğin Yapılacağı Yer</h3>
-                            <p className="text-xl max-lg:text-base max-sm:text-sm font-light">{eventData.eventLocation.address}</p>
+                            <p className="text-xl max-lg:text-base max-sm:text-sm font-light">{eventData.eventAddress}</p>
                         </div>
                         <div className="flex flex-col gap-2">
                             <h4 className="text-xl max-lg:text-lg font-semibold">Katılımcılar</h4>
@@ -198,10 +182,10 @@ export default function EventPage() {
                     </div>
                 </div>
                 <div className="w-3/12 flex flex-col gap-6">
-                    <Link to={`/${creator.username}`} className="flex flex-col items-center gap-3 h-fit p-6 max-sm:p-2 border border-main_text rounded-xl">
-                        {creator.photoURL && <img className="max-h-[200px] aspect-square object-cover rounded-lg" src={creator.photoURL} alt="Creator" />}
+                    <Link to={`/${eventData.creatorUserName}`} className="flex flex-col items-center gap-3 h-fit p-6 max-sm:p-2 border border-main_text rounded-xl">
+                        {eventData.creatorPhotoURL && <img className="max-h-[200px] aspect-square object-cover rounded-lg" src={eventData.creatorPhotoURL} alt="Creator" />}
                         <span className="text-main_light_gray max-sm:text-xs">Etkinliği Düzenleyen</span>
-                        <p className="text-xl max-md:text-lg max-sm:text-base">@{creator.username}</p>
+                        <p className="text-xl max-md:text-lg max-sm:text-base">@{eventData.creatorUserName}</p>
                     </Link>
                     {creator.id != user?.uid && 
                     <div className="flex flex-col gap-6">
