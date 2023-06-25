@@ -49,9 +49,7 @@ function Hit({hit}) {
                                     <img className='w-10 h-10 rounded-full object-cover' src={hit.creatorPhotoURL} alt="userPhoto" />
                                     <span className='text-lg max-lg:text-base'>{hit.creatorUserName}</span>
                                 </Link>
-                                {hit.creatorID == user.uid && <EditButton />}
                             </div>
-                            {hit.creatorID == user.uid && <EditButton />}
                             <div className="flex flex-col gap-6 justify-between text-main_dark dark:text-main_light">
                                 <img className={`h-80 max-sm:w-full max-[400px]:h-60 xl:h-96 rounded-xl border dark:border-main_light_dark object-cover anim-500`} src={hit.photoURL} alt="activity"/>
                                 <div className='flex flex-col'>

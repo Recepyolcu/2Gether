@@ -25,10 +25,6 @@ export default function Home() {
         }
     }
 
-    const Filters = () => {
-        
-    }
-
     return (
         <div className="w-full flex gap-5">
             <InstantSearch searchClient={searchClient} indexName='events'>
